@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="175dp"
+    app:cardBackgroundColor="@color/light_medium_gray"
+    app:cardCornerRadius="8dp"
+    android:layout_margin="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/repository_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="Repository Name"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintTop_toTopOf="@+id/avatar" />
+
+        <TextView
+            android:id="@+id/owner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="Owner name"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintTop_toBottomOf="@+id/repository_name" />
+
+        <ImageView
+            android:id="@+id/ivWatcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintTop_toBottomOf="@+id/owner_name"
+            app:srcCompat="@drawable/ic_watcher" />
+
+        <TextView
+            android:id="@+id/watcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:text="101"
+            app:layout_constraintBottom_toBottomOf="@+id/ivWatcher"
+            app:layout_constraintStart_toEndOf="@+id/ivWatcher"
+            app:layout_constraintTop_toTopOf="@+id/ivWatcher"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/ivFork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/ivWatcher"
+            app:layout_constraintTop_toBottomOf="@+id/ivWatcher"
+            app:srcCompat="@drawable/ic_git_fork" />
+
+        <TextView
+            android:id="@+id/fork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:text="5"
+            app:layout_constraintBottom_toBottomOf="@+id/ivFork"
+            app:layout_constraintStart_toEndOf="@+id/ivFork"
+            app:layout_constraintTop_toTopOf="@+id/ivFork" />
+
+        <ImageView
+            android:id="@+id/ivIssues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivFork"
+            app:layout_constraintStart_toEndOf="@+id/fork"
+            app:layout_constraintTop_toTopOf="@+id/ivFork"
+            app:srcCompat="@drawable/ic_refresh" />
+
+        <TextView
+            android:id="@+id/issues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:text="1010"
+            app:layout_constraintBottom_toBottomOf="@+id/ivIssues"
+            app:layout_constraintStart_toEndOf="@+id/ivIssues"
+            app:layout_constraintTop_toTopOf="@+id/ivIssues" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.cardview.widget.CardView>
