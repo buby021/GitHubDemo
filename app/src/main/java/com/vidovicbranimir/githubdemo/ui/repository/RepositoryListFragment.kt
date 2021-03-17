@@ -3,21 +3,22 @@ package com.vidovicbranimir.githubdemo.ui.repository
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
+import com.vidovicbranimir.githubdemo.R
+import com.vidovicbranimir.githubdemo.data.network.RestClient
 import com.vidovicbranimir.githubdemo.data.network.responses.Repo
+import com.vidovicbranimir.githubdemo.data.repository.BaseRepository
 import com.vidovicbranimir.githubdemo.data.repository.GitRepositoryRepository
 import com.vidovicbranimir.githubdemo.databinding.FragmentRepositoryListBinding
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
@@ -26,6 +27,8 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 class RepositoryListFragment :
     BaseFragment<RepositoryViewModel, FragmentRepositoryListBinding, GitRepositoryRepository>() {
@@ -53,6 +56,8 @@ class RepositoryListFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         sharedElementReturnTransition =
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -126,22 +131,22 @@ class RepositoryListFragment :
         binding.spinnerSort.adapter =
             ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_1, sortBy)
         binding.spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val sort = parent?.getItemAtPosition(position)
+                    search(binding.searchRepo.text.toString(), sort.toString(), order)
+                }
             }
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val sort = parent?.getItemAtPosition(position)
-                search(binding.searchRepo.text.toString(), sort.toString(), order)
-            }
-        }
-
-//        search(query, binding.spinnerSort.selectedItem.toString(), order)
+        search(query, binding.spinnerSort.selectedItem.toString(), order)
 
         binding.sortDirection.setOnClickListener {
             it?.animate()?.rotationBy(180f)
@@ -152,6 +157,53 @@ class RepositoryListFragment :
 
         binding.recyclerView.doOnPreDraw {
             startPostponedEnterTransition()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.options_menu_logout, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.option_logout) {
+            logout()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun logoutExternal() {
+//        viewModel.logoutReposnse.observe(viewLifecycleOwner, Observer { result ->
+//            val temp = result
+//        })
+//        lifecycleScope.launch {
+//            val authToken = userPreferences.authToken.first()
+//            val api = restClient.buildApi(authToken)
+//            viewModel.logout(api)
+//        }
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://github.com/logout")
+        )
+        startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // the intent filter defined in AndroidManifest will handle the return from ACTION_VIEW intent
+        val uri = activity?.intent?.data
+        if (uri != null && uri.toString().startsWith("redirectUri")) {
+            // use the parameter your API exposes for the code (mostly it's "code")
+            val code = uri.getQueryParameter("code")
+            if (code != null) {
+                // get access token
+                // we'll do that in a minute
+//                viewModel.getAuthToken(code)
+            }
+            Toast.makeText(activity, code.toString(), Toast.LENGTH_LONG)
+        } else if (uri?.getQueryParameter("error") != null) {
+            // show an error message here
+            Toast.makeText(activity, "ERROR", Toast.LENGTH_LONG)
         }
     }
 
@@ -186,17 +238,17 @@ class RepositoryListFragment :
         repoName: TextView,
         repoOwner: TextView
     ) {
-        val action =
-            RepositoryListFragmentDirections.actionRepositoryListFragmentToRepositoryDetailsFragment(
-                repository = repo
-            )
+            val action =
+                RepositoryListFragmentDirections.actionRepositoryListFragmentToRepositoryDetailsFragment(
+                    repository = repo
+                )
 
-        val p1 = Pair(avatar, repo.owner.avatar_url)
-        val p2 = Pair(repoName, repo.owner.login)
-        val p3 = Pair(repoOwner, repo.full_name)
+            val p1 = Pair(avatar, repo.owner.avatar_url)
+            val p2 = Pair(repoName, repo.owner.login)
+            val p3 = Pair(repoOwner, repo.full_name)
 
-        val extras = FragmentNavigatorExtras(p1, p2, p3)
-        findNavController().navigate(action, extras)
+            val extras = FragmentNavigatorExtras(p1, p2, p3)
+            findNavController().navigate(action, extras)
     }
 
     override fun getViewModel() = RepositoryViewModel::class.java
@@ -206,7 +258,10 @@ class RepositoryListFragment :
         container: ViewGroup?
     ) = FragmentRepositoryListBinding.inflate(inflater, container, false)
 
-    override fun getFragmentRepository() = GitRepositoryRepository(restClient.buildApi)
+    override fun getFragmentRepository(): GitRepositoryRepository {
+        val token = runBlocking { userPreferences.authToken.first() }
+        return GitRepositoryRepository(restClient.buildApi(token), userPreferences)
+    }
 
 
 }

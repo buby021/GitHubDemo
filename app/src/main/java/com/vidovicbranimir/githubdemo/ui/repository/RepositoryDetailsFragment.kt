@@ -14,6 +14,8 @@ import com.vidovicbranimir.githubdemo.data.network.responses.Repo
 import com.vidovicbranimir.githubdemo.data.repository.GitRepositoryRepository
 import com.vidovicbranimir.githubdemo.databinding.FragmentRepositoryDetailsBinding
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class RepositoryDetailsFragment :
@@ -80,7 +82,10 @@ class RepositoryDetailsFragment :
         container: ViewGroup?
     ) = FragmentRepositoryDetailsBinding.inflate(inflater, container, false)
 
-    override fun getFragmentRepository() = GitRepositoryRepository(restClient.buildApi)
+    override fun getFragmentRepository(): GitRepositoryRepository {
+        val token = runBlocking { userPreferences.authToken.first() }
+        return GitRepositoryRepository(restClient.buildApi(token), userPreferences)
+    }
 
 
 }

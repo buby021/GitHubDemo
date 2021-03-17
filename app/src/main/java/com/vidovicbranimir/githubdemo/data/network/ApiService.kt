@@ -1,13 +1,27 @@
 package com.vidovicbranimir.githubdemo.data.network
 
+import com.vidovicbranimir.githubdemo.data.model.AccessToken
 import com.vidovicbranimir.githubdemo.data.network.responses.GitRepositoryResponse
-import retrofit2.http.GET
-import retrofit2.http.Query
+import com.vidovicbranimir.githubdemo.data.network.responses.User
+import retrofit2.http.*
 
 interface ApiService {
 
+    @Headers("Accept: application/json")
+    @POST
+    @FormUrlEncoded
+    suspend fun login(
+        @Field("client_id") clientId: String,
+        @Field("client_secret") clientSecret: String,
+        @Field("code") code: String,
+        @Url url: String = "https://github.com/login/oauth/access_token"
+    ): AccessToken
 
-    suspend fun login(): Any
+    @DELETE
+    suspend fun logout(@Url url: String = "https://github.com/logout")
+
+//    @DELETE("installation/token")
+//    suspend fun logout()
 
     @GET("search/repositories")
     suspend fun getRepositrories(
@@ -17,4 +31,7 @@ interface ApiService {
         @Query("per_page") per_page: Int,
         @Query("page") page: Int
     ): GitRepositoryResponse
+
+    @GET("user")
+    suspend fun getUser(): User
 }

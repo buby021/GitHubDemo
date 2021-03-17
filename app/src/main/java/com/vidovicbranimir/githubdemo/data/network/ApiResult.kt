@@ -7,6 +7,7 @@ sealed class ApiResult<out T> {
     data class Failure(
         val isNetworkError : Boolean,
         val errorCode: Int?,
-        val errorBofy: ResponseBody?
+        val errorBody: ResponseBody?
     ) : ApiResult<Nothing>()
+    object Loading : ApiResult<Nothing>()
 }

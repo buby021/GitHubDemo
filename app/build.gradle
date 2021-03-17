@@ -25,6 +25,19 @@ android {
         }
     }
 
+    flavorDimensions "version"
+    productFlavors {
+        free {
+            dimension "version"
+            applicationId "com.vidovicbranimir.githubdemo.free"
+        }
+
+        paid {
+            dimension "version"
+            applicationId "com.vidovicbranimir.githubdemo.paid"
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -35,6 +48,26 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    sourceSets {
+        free {
+            java {
+                srcDirs 'src\\free\\java'
+            }
+            resources {
+                srcDirs 'src\\free\\resources'
+            }
+        }
+        paid {
+            java {
+                srcDirs 'src\\paid\\java'
+            }
+        }
+        main {
+            java {
+                srcDirs 'src\\main\\java', 'src\\main\\paid\\java'
+            }
+        }
     }
 }
 
@@ -73,7 +106,7 @@ dependencies {
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha04"
 
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
     implementation "androidx.paging:paging-runtime-ktx:3.0.0-beta01"
@@ -81,5 +114,9 @@ dependencies {
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+
+    //lottie
+    implementation "com.airbnb.android:lottie:3.6.1"
+
 
 }
