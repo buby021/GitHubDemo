@@ -1,4 +1,4 @@
-package com.vidovicbranimir.githubdemo.data
+package com.vidovicbranimir.githubdemo.utils
 
 
 import java.text.*
@@ -10,18 +10,13 @@ object Format {
     private var sdf: SimpleDateFormat? = null
 
 
-    fun aslDateTimeString(date: Date?): String {
+    fun asDateTimeString(date: Date?): String {
         return DATETIME!!.format(date)
     }
 
     fun asDateString(dateString: String?): String {
         val date = sdf!!.parse(dateString)
         return DATE!!.format(date)
-    }
-
-
-    fun isEmpty(text: String?): Boolean {
-        return text == null || text.trim { it <= ' ' }.isEmpty()
     }
 
     init {

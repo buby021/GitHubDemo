@@ -11,8 +11,8 @@ import com.vidovicbranimir.githubdemo.R
 import com.vidovicbranimir.githubdemo.data.network.ApiResult
 
 import com.vidovicbranimir.githubdemo.data.repository.MainRepository
-import com.vidovicbranimir.githubdemo.data.startNewActivity
-import com.vidovicbranimir.githubdemo.data.visible
+import com.vidovicbranimir.githubdemo.utils.startNewActivity
+import com.vidovicbranimir.githubdemo.utils.visible
 import com.vidovicbranimir.githubdemo.databinding.FragmentMainBinding
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
 import com.vidovicbranimir.githubdemo.ui.login.LoginActivity
@@ -27,6 +27,12 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding, MainReposi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        initBinding()
+        initObservers()
+    }
+
+
+    private fun initBinding() {
         binding.loginName.visible(false)
         binding.animationView.speed = 2.5f
 
@@ -40,18 +46,6 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding, MainReposi
             viewModel.getUser()
             binding.animationView.playAnimation()
         }
-
-        viewModel.user.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ApiResult.Success -> {
-                    animate()
-                    binding.animationView.playAnimation()
-                    binding.loginName.text = it.value.login
-                }
-                is ApiResult.Failure -> {
-                }
-            }
-        })
 
         binding.animationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
@@ -73,15 +67,27 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding, MainReposi
 
             override fun onAnimationStart(animation: Animator?) {
             }
-
         })
+    }
 
+    private fun initObservers() {
+        viewModel.user.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ApiResult.Success -> {
+                    animate()
+                    binding.loginName.text = it.value.login
+                }
+                is ApiResult.Failure -> {
+                }
+            }
+        })
     }
 
 
     private fun animate() {
         binding.loginName.visible(true)
         binding.loginName.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
+        binding.animationView.playAnimation()
     }
 
 

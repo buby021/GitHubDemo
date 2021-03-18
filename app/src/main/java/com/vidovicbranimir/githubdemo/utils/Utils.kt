@@ -1,4 +1,4 @@
-package com.vidovicbranimir.githubdemo.data
+package com.vidovicbranimir.githubdemo.utils
 
 import android.app.Activity
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import com.vidovicbranimir.githubdemo.R
 import com.vidovicbranimir.githubdemo.data.network.ApiResult
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
 import com.vidovicbranimir.githubdemo.ui.login.LoginFragment
@@ -36,12 +37,12 @@ fun Fragment.handleApiError(
 ) {
     when {
         failure.isNetworkError -> requireView().snackbar(
-            "Please check your internet connection",
+            getString(R.string.error_check_connectivity),
             retry
         )
         failure.errorCode == 401 -> {
             if (this is LoginFragment) {
-                requireView().snackbar("Wrong credentials")
+                requireView().snackbar(getString(R.string.error_wrong_credentials))
             } else {
                 (this as BaseFragment<*, *, *>).logout()
             }

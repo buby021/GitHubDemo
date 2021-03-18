@@ -8,21 +8,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.vidovicbranimir.githubdemo.R
 import com.vidovicbranimir.githubdemo.ui.main.MainActivity
-import com.vidovicbranimir.githubdemo.data.handleApiError
+import com.vidovicbranimir.githubdemo.utils.handleApiError
 import com.vidovicbranimir.githubdemo.data.network.ApiResult
 import com.vidovicbranimir.githubdemo.data.repository.LoginRepository
 import com.vidovicbranimir.githubdemo.databinding.FragmentLoginBinding
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
+import com.vidovicbranimir.githubdemo.utils.Constants
 import kotlinx.coroutines.launch
 
 
 class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding, LoginRepository>() {
-
-    private val clientId = "07f1a1a2948e882fa91f"
-    private val clientSecret = "0ba762306e0f0e15bbd7f7c99df817c1ef9d4773"
-    private val redirectUri = "githubdemo://callback"
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -30,7 +27,7 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding, LoginRe
         binding.buttonLogin.setOnClickListener {
             val intent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/login/oauth/authorize" + "?client_id=" + clientId + "&scope=repo&redirect_uri=" + redirectUri)
+                Uri.parse("https://github.com/login/oauth/authorize" + "?client_id=" + Constants.CLIENT_ID + "&scope=repo&redirect_uri=" + Constants.REDIRECT_URI)
             )
             startActivity(intent)
         }
@@ -54,20 +51,16 @@ class LoginFragment : BaseFragment<LoginViewModel, FragmentLoginBinding, LoginRe
 
     override fun onResume() {
         super.onResume()
-        // the intent filter defined in AndroidManifest will handle the return from ACTION_VIEW intent
         val uri = activity?.intent?.data
-        if (uri != null && uri.toString().startsWith(redirectUri)) {
-            // use the parameter your API exposes for the code (mostly it's "code")
-            val code = uri.getQueryParameter("code")
+        if (uri != null && uri.toString().startsWith(Constants.REDIRECT_URI)) {
+            val code = uri.getQueryParameter(Constants.CODE)
             if (code != null) {
-                // get access token
-                // we'll do that in a minute
                 viewModel.getAuthToken(code)
             }
             Toast.makeText(activity, code.toString(), Toast.LENGTH_LONG)
         } else if (uri?.getQueryParameter("error") != null) {
             // show an error message here
-            Toast.makeText(activity, "ERROR", Toast.LENGTH_LONG)
+            Toast.makeText(activity, getString(R.string.error), Toast.LENGTH_LONG)
         }
     }
 

@@ -42,7 +42,7 @@ class UserPreferences(
         }
     }
 
-     fun readString(key: String) : Flow<String> {
+    fun getString(key: String): Flow<String> {
         return dataStore.data.map { preferences ->
             preferences[preferencesKey<String>(key)] ?: ""
         }

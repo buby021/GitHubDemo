@@ -3,20 +3,18 @@ package com.vidovicbranimir.githubdemo.ui.repository
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.transition.TransitionInflater
 import com.vidovicbranimir.githubdemo.R
-import com.vidovicbranimir.githubdemo.data.Format
-import com.vidovicbranimir.githubdemo.data.loadImage
+import com.vidovicbranimir.githubdemo.utils.Format
+import com.vidovicbranimir.githubdemo.utils.loadImage
 import com.vidovicbranimir.githubdemo.data.network.responses.Repo
 import com.vidovicbranimir.githubdemo.data.repository.GitRepositoryRepository
 import com.vidovicbranimir.githubdemo.databinding.FragmentRepositoryDetailsBinding
 import com.vidovicbranimir.githubdemo.ui.base.BaseFragment
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import java.util.*
 
 class RepositoryDetailsFragment :
     BaseFragment<RepositoryViewModel, FragmentRepositoryDetailsBinding, GitRepositoryRepository>() {
@@ -43,6 +41,7 @@ class RepositoryDetailsFragment :
                 issues.text = repo.open_issues_count.toString()
                 language.text = repo.language
                 dateCreated.text = Format.asDateString(repo.created_at)
+
                 ivRepositoryExternal.setOnClickListener {
                     openExternalUrl(repo.html_url)
                 }
@@ -52,18 +51,22 @@ class RepositoryDetailsFragment :
                 description.text = getString(R.string.lorem_ipsum)
             }
 
-            val animation = TransitionInflater.from(requireContext())
-                .inflateTransition(android.R.transition.move)
-
-            sharedElementEnterTransition = animation
-            sharedElementReturnTransition = animation
-
-            startPostponedEnterTransition()
-
-            binding.avatar.transitionName = repo.owner.avatar_url
-            binding.ownerName.transitionName = repo.owner.login
-            binding.repositoryName.transitionName = repo.full_name
         }
+        initAnimations()
+    }
+
+    private fun initAnimations() {
+        val animation = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move)
+
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
+
+        startPostponedEnterTransition()
+
+        binding.avatar.transitionName = repo.owner.avatar_url
+        binding.ownerName.transitionName = repo.owner.login
+        binding.repositoryName.transitionName = repo.full_name
     }
 
     private fun openExternalUrl(url: String) {

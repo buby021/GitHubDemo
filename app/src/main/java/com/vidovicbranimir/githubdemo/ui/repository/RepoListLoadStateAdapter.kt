@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.vidovicbranimir.githubdemo.data.visible
+import com.vidovicbranimir.githubdemo.utils.visible
 import com.vidovicbranimir.githubdemo.databinding.LoadStateBinding
 
 class RepoListLoadStateAdapter(private val retry: () -> Unit) :

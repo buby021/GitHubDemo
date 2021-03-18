@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.vidovicbranimir.githubdemo.data.loadImage
+import com.vidovicbranimir.githubdemo.utils.loadImage
 import com.vidovicbranimir.githubdemo.data.network.responses.Repo
 import com.vidovicbranimir.githubdemo.databinding.ListRepoItemBinding
 import com.vidovicbranimir.githubdemo.enums.versionType
@@ -37,10 +37,13 @@ class RepoListAdapter(
         fun bindRepo(item: Repo) = with(binding) {
             avatar.loadImage(item.owner.avatar_url)
             avatar.transitionName = item.owner.avatar_url
+
             ownerName.text = item.owner.login
             ownerName.transitionName = item.owner.login
+
             repositoryName.text = item.name
             repositoryName.transitionName = item.full_name
+
             fork.text = item.forks_count.toString()
             watcher.text = item.watchers_count.toString()
             issues.text = item.open_issues_count.toString()

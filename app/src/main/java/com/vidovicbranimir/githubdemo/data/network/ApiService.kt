@@ -17,6 +17,7 @@ interface ApiService {
         @Url url: String = "https://github.com/login/oauth/access_token"
     ): AccessToken
 
+    // couldnt find proper not deprecated endpoint for logout
     @DELETE
     suspend fun logout(@Url url: String = "https://github.com/logout")
 

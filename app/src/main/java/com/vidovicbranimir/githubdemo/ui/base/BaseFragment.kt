@@ -1,6 +1,5 @@
 package com.vidovicbranimir.githubdemo.ui.base
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +11,10 @@ import androidx.viewbinding.ViewBinding
 import com.vidovicbranimir.githubdemo.data.UserPreferences
 import com.vidovicbranimir.githubdemo.data.network.RestClient
 import com.vidovicbranimir.githubdemo.data.repository.BaseRepository
-import com.vidovicbranimir.githubdemo.data.startNewActivity
+import com.vidovicbranimir.githubdemo.utils.startNewActivity
 import com.vidovicbranimir.githubdemo.ui.login.LoginActivity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 abstract class BaseFragment<VM : BaseViewModel, B : ViewBinding, R : BaseRepository> : Fragment() {
 
