@@ -7,7 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RestClient {
     companion object {
         private const val BASE_URL = "https://api.github.com/"
-
     }
 
     fun buildApi(
